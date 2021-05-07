@@ -58,6 +58,6 @@ Classes : LeaveRequestManager.java ==> approveRequest(int)
 
 ### Feature 8: Approve leave request
 
-* Admin can approve the leave requests if he wants to.
+* Admin can reject the leave requests if he needs to.
 
 Classes : LeaveRequestManager.java ==> rejectRequest(int)
