@@ -43,7 +43,7 @@ public class CancelLeaveServlet extends HttpServlet {
 		PrintWriter output = response.getWriter();
 		int id = Integer.parseInt(request.getParameter("cancelbtn"));
 		try {
-			LeaveRequestManager.cancelRequests(id);
+			LeaveRequestManager.cancelRequest(id);
 		} catch (Exception e) {
 			output.println("Leave Request Not found");
 		}
