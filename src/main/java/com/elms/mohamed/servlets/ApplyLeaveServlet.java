@@ -11,8 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.elms.mohamed.source.LeaveRequest;
-import com.elms.mohamed.source.LeaveRequestManager;
+import com.elms.mohamed.model.LeaveRequest;
+import com.elms.mohamed.service.LeaveRequestManager;
 
 /**
  * Servlet implementation class ApplyLeaveServlet
@@ -26,15 +26,12 @@ public class ApplyLeaveServlet extends HttpServlet {
      */
     public ApplyLeaveServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -44,20 +41,27 @@ public class ApplyLeaveServlet extends HttpServlet {
 		response.setContentType("text/html");
 		PrintWriter output = response.getWriter();
 		String employeename = request.getParameter("employeename");
-		int employeeid = Integer.parseInt(request.getParameter("employeeid"));
-		LocalDate fromDate = LocalDate.parse(request.getParameter("fromdate"));
-		LocalDate toDate = LocalDate.parse(request.getParameter("todate"));
+		String stringId =request.getParameter("employeeid");
+		int employeeid;
+		LocalDate fromDate,toDate;
 		String reason = request.getParameter("reason");
 		LeaveRequest leaveRequest = new LeaveRequest();
-		leaveRequest.setName(employeename);
-		leaveRequest.setId(employeeid);
-		leaveRequest.setFromDate(fromDate);
-		leaveRequest.setToDate(toDate);
-		leaveRequest.setReason(reason);
-		LeaveRequestManager.addRequest(leaveRequest);
-		output.println("Leave request Applied Successfully");
-		RequestDispatcher dispatch = request.getRequestDispatcher("employeepage.jsp");
-		dispatch.include(request, response);
+		try {
+			fromDate = LocalDate.parse(request.getParameter("fromdate"));
+			toDate = LocalDate.parse(request.getParameter("todate"));
+			leaveRequest.setName(employeename);
+			employeeid = Integer.parseInt(stringId);
+			leaveRequest.setId(employeeid);
+			leaveRequest.setFromDate(fromDate);
+			leaveRequest.setToDate(toDate);
+			leaveRequest.setReason(reason);
+			LeaveRequestManager.addRequest(leaveRequest);
+			output.println("Leave request Applied Successfully");
+		} catch (Exception e) {
+			output.println(e.getMessage());
+		}finally {
+			RequestDispatcher dispatch = request.getRequestDispatcher("employeepage.jsp");
+			dispatch.include(request, response);
+		}
 	}
-
 }

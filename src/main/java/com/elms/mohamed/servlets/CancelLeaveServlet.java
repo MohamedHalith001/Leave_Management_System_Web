@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.elms.mohamed.source.LeaveRequestManager;
+import com.elms.mohamed.service.LeaveRequestManager;
 
 /**
  * Servlet implementation class CancelLeaveServlet
@@ -24,15 +24,13 @@ public class CancelLeaveServlet extends HttpServlet {
      */
     public CancelLeaveServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+
 	}
 
 	/**
@@ -41,14 +39,16 @@ public class CancelLeaveServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 		PrintWriter output = response.getWriter();
-		int id = Integer.parseInt(request.getParameter("cancelbtn"));
 		try {
+			int id = Integer.parseInt(request.getParameter("cancelbtn"));
 			LeaveRequestManager.cancelRequest(id);
+			output.println("Removed the leave request");
 		} catch (Exception e) {
-			output.println("Leave Request Not found");
+			output.println(e.getMessage());
+		}finally {
+			RequestDispatcher dispatch = request.getRequestDispatcher("cancelleave.jsp");
+			dispatch.include(request, response);
 		}
-		RequestDispatcher dispatch = request.getRequestDispatcher("viewrequest.jsp");
-		dispatch.include(request, response);
 	}
 
 }

@@ -10,8 +10,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.elms.mohamed.source.LoginValidator;
-import com.elms.mohamed.source.User;
+import com.elms.mohamed.validator.LoginValidator;
+
 
 /**
  * Servlet implementation class LoginServlet
@@ -25,7 +25,6 @@ public class LoginServlet extends HttpServlet {
      */
     public LoginServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
@@ -44,29 +43,37 @@ public class LoginServlet extends HttpServlet {
 		RequestDispatcher dispatch;
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
+		String user = request.getParameter("user");
 		if(username==null) {
 			output.println("Please log in first");
 			dispatch = request.getRequestDispatcher("login.jsp");
 			dispatch.include(request, response);
 		}
-		User user = new User();
-		user.setUsername(username);
-		user.setPassword(password);
-		boolean admin = LoginValidator.adminVerification(user);
-		boolean employee = LoginValidator.employeeVerification(user);
-		if(admin) {
-			output.println("<h2>Welcome "+username+"!</h2>");
-			dispatch = request.getRequestDispatcher("adminpage.jsp");
-			dispatch.include(request, response);
-		}else if(employee){
-			output.println("<h2>Welcome"+username+"!</h2>");
-			dispatch = request.getRequestDispatcher("employeepage.jsp");
-			dispatch.include(request, response);
+		boolean webUser;
+		if(user != null) {
+			if(user.equals("admin")) {
+				boolean admin = LoginValidator.adminVerification(username,password);
+				if(admin) {
+					output.println("<h2>Welcome "+username+"!</h2>");
+					dispatch = request.getRequestDispatcher("adminpage.jsp");
+					dispatch.include(request, response);
+				}
+			}else if(user.equals("employee")) {
+				boolean employee = LoginValidator.employeeVerification(username,password);
+				if(employee){
+					output.println("<h2>Welcome "+username+"!</h2>");
+					dispatch = request.getRequestDispatcher("employeepage.jsp");
+					dispatch.include(request, response);
+				}
+			}else {
+					output.println("Sorry Incorrect Username or Password");
+					dispatch = request.getRequestDispatcher("login.jsp");
+					dispatch.include(request, response);
+			}
 		}else {
-			output.println("Sorry Incorrect Username or Password");
+			output.println("Invalid Action");
 			dispatch = request.getRequestDispatcher("login.jsp");
 			dispatch.include(request, response);
 		}
 	}
-
 }

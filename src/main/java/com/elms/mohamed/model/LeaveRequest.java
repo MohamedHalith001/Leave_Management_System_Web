@@ -1,4 +1,4 @@
-package com.elms.mohamed.source;
+package com.elms.mohamed.model;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -16,8 +16,8 @@ public class LeaveRequest {
 		return name;
 	}
 	public void setName(String name) {
-		if(name.isEmpty() || name.equalsIgnoreCase(" ")) {
-			throw new IllegalArgumentException("Name cannot be empty");
+		if(name==null || name.trim().isEmpty()) {
+			throw new IllegalArgumentException("Name cannot be empty or null");
 		}
 		this.name = name;
 	}
@@ -52,7 +52,7 @@ public class LeaveRequest {
 		return reason;
 	}
 	public void setReason(String reason) {
-		if(reason.isEmpty() || reason.equalsIgnoreCase(" ")) {
+		if(reason.isEmpty() || reason.replaceAll(" ","").isEmpty()) {
 			throw new IllegalArgumentException("Reason cannot be empty");
 		}
 		this.reason = reason;
@@ -70,7 +70,7 @@ public class LeaveRequest {
 		return status;
 	}
 	public void setStatus(String status) {
-		if(status.isEmpty() || status.equalsIgnoreCase(" ")) {
+		if(status.isEmpty() || status.replaceAll(" ","").isEmpty()) {
 			throw new IllegalArgumentException("Status cannot be empty");
 		}
 		this.status = status;

@@ -1,6 +1,7 @@
+<%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
-<%@page import="com.elms.mohamed.source.LeaveRequest"%>
-<%@page import="com.elms.mohamed.source.LeaveRequestManager"%>
+<%@page import="com.elms.mohamed.model.LeaveRequest"%>
+<%@page import="com.elms.mohamed.service.LeaveRequestManager"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
@@ -19,7 +20,7 @@
 <%
 RequestDispatcher dispatch = request.getRequestDispatcher("adminpage.jsp");
 dispatch.include(request, response);
-ArrayList<LeaveRequest> requestList = LeaveRequestManager.getRequestList();
+List<LeaveRequest> requestList = LeaveRequestManager.getRequestList();
 for(LeaveRequest leaveRequest : requestList){
 
 %>

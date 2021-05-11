@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.elms.mohamed.source.LeaveRequestManager;
+import com.elms.mohamed.service.LeaveRequestManager;
 
 /**
  * Servlet implementation class ApproveRejectServlet
@@ -24,15 +24,12 @@ public class ApproveRejectServlet extends HttpServlet {
      */
     public ApproveRejectServlet() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -43,23 +40,20 @@ public class ApproveRejectServlet extends HttpServlet {
 		PrintWriter output = response.getWriter();
 		String action= request.getParameter("approver");
 		String[] values = action.split("-",2);
-		int id = Integer.parseInt(values[1]);
-		if(values[0].equals("approve")) {
-			try {
+		int id;
+		try {
+			id = Integer.parseInt(values[1]);
+			if(values[0].equals("approve")) {
 				LeaveRequestManager.approveRequest(id);
-			} catch (Exception e) {
-				output.println("Invalid Leave Request");
-			}
-		}else {
-			try {
+			}else {
 				LeaveRequestManager.rejectRequest(id);
-			} catch (Exception e) {
-				output.println("Invalid Leave Request");
 			}
-		}
-		RequestDispatcher dispatch = request.getRequestDispatcher("adminrequests.jsp");
-		dispatch.include(request, response);
-		
+		} catch (Exception e) {
+			output.println(e.getMessage());
+		}finally {
+			RequestDispatcher dispatch = request.getRequestDispatcher("adminrequests.jsp");
+			dispatch.include(request, response);
+		}		
 	}
 
 }

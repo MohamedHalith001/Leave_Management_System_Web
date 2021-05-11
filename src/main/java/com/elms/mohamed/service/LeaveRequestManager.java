@@ -1,6 +1,9 @@
-package com.elms.mohamed.source;
+package com.elms.mohamed.service;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import com.elms.mohamed.model.LeaveRequest;
 
 /**
  * Class to manage all the operations or actions performed on a leave request.
@@ -8,8 +11,8 @@ import java.util.ArrayList;
  */
 
 public class LeaveRequestManager {
-	public static ArrayList<LeaveRequest> requestList = new ArrayList<LeaveRequest>();
-	public static int idNo=0;
+	private static List<LeaveRequest> requestList = new ArrayList<LeaveRequest>();
+	public static int idNo=1;
 	
 	/**
 	 * This method adds the leave request to the list of request whenever an employee 
@@ -17,18 +20,27 @@ public class LeaveRequestManager {
 	 * @param leaveRequest
 	 */
 	public static void addRequest(LeaveRequest leaveRequest) {
-		idNo++;
 		leaveRequest.setLeaveId(idNo);
 		requestList.add(leaveRequest);
+		idNo++;
 	}
 	
 	/**
 	 * Function of the method is to return the list of requests so that list can be 
 	 * accessed or traversed.
-	 * @return ArrayList<LeaveRequest>
+	 * @return List<LeaveRequest>
 	 */
-	public static ArrayList<LeaveRequest> getRequestList() {
+	public static List<LeaveRequest> getRequestList() {
 		return requestList;
+	}
+	/**
+	 * Method used  to get a particular leave request
+	 * @param leaveId
+	 * @return LeaveRequest
+	 */
+	public static LeaveRequest getLeaveRequest(int leaveId) {
+		leaveId--;
+		return requestList.get(leaveId);
 	}
 	
 	/**
@@ -45,18 +57,30 @@ public class LeaveRequestManager {
 	}
 	
 	/**
+	 * Used to reassign the values of leaveID after cancellation
+	 */
+	public static void reassignLeaveId() {
+		int leaveId=1;
+		for (LeaveRequest leaveRequest : requestList) {
+			leaveRequest.setLeaveId(leaveId);
+			leaveId++;
+		}
+		idNo=leaveId;
+	}
+	
+	/**
 	 * used to cancel requests in case an employee needs to.
 	 * @param leaveId
 	 */
 	public static void cancelRequest(int leaveId) {
-		int removeId=0;
-		for (LeaveRequest leaveRequest : requestList) {
-			if(leaveId==leaveRequest.getLeaveId()) {
-				break;
-			}
-			removeId++;
+		leaveId--;
+		try {
+			requestList.remove(leaveId);
+			reassignLeaveId();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ArrayIndexOutOfBoundsException("No leave request found with that Id");
 		}
-		requestList.remove(removeId);
 	}
 	
 	/**
@@ -64,12 +88,13 @@ public class LeaveRequestManager {
 	 * @param leaveId
 	 */
 	public static void approveRequest(int leaveId) {
-		for (LeaveRequest leaveRequest : requestList) {
-			if(leaveRequest.getLeaveId() == leaveId) {
-				leaveRequest.setStatus("Request Approved");
-				break;
-			}
-		}	
+		try {
+			LeaveRequest leaveRequest = getLeaveRequest(leaveId);
+			leaveRequest.setStatus("Approved");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ArrayIndexOutOfBoundsException("Cannot approve a non-existing requests");
+		}
 	}
 	
 	/**
@@ -77,11 +102,13 @@ public class LeaveRequestManager {
 	 * @param leaveId
 	 */
 	public static void rejectRequest(int leaveId) {
-		for (LeaveRequest leaveRequest : requestList) {
-			if(leaveId == leaveRequest.getLeaveId()) {
-				leaveRequest.setStatus("Request Rejected");
-				break;
-			}
+		LeaveRequest leaveRequest;
+		try {
+			leaveRequest = getLeaveRequest(leaveId);
+			leaveRequest.setStatus("Request Rejected");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ArrayIndexOutOfBoundsException("Cannot reject a non-existing request");
 		}
 	}
 }
